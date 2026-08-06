@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cyber Snake: Evolution | AAA Web Arcade</title>
+  <meta name="description" content="Embark on an ultra-modern futuristic snake experience with gorgeous visual effects, custom skins, dynamic abilities, and epic boss battles.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Animated Background Particles -->
+  <div id="bg-glow"></div>
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Notification Banner -->
+  <div id="notification-banner" class="hidden">
+    <div class="notification-icon">🏆</div>
+    <div class="notification-text">
+      <div class="notification-title">Achievement Unlocked!</div>
+      <div class="notification-desc">First Nibble</div>
+    </div>
+  </div>
+
+  <!-- MAIN APP WRAPPER -->
+  <div id="app-wrapper">
+
+    <!-- MAIN MENU SCREEN -->
+    <section id="screen-main-menu" class="screen active">
+      <div class="header-container">
+        <h1 class="logo-text" data-text="CYBER SNAKE">CYBER SNAKE</h1>
+        <p class="subtitle-text">EVOLUTION</p>
+      </div>
+
+      <div class="profile-summary glass-panel">
+        <div class="avatar-container">
+          <div class="cyber-avatar"></div>
+        </div>
+        <div class="profile-details">
+          <div class="profile-name">Operator <span id="menu-profile-name">Guest</span></div>
+          <div class="level-badge">LVL <span id="menu-lvl">1</span></div>
+          <div class="xp-bar-container">
+            <div class="xp-bar-fill" id="menu-xp-fill" style="width: 0%;"></div>
+          </div>
+          <div class="xp-text"><span id="menu-xp-current">0</span> / <span id="menu-xp-next">100</span> XP</div>
+        </div>
+      </div>
+
+      <div class="menu-actions">
+        <button class="btn btn-primary" id="btn-play-game">
+          <span class="btn-glow"></span>
+          <span class="btn-text">INITIALIZE SIMULATION</span>
+        </button>
+        <div class="menu-grid">
+          <button class="btn btn-secondary" id="btn-show-customization">
+            <span class="btn-text">SKINS & TRAILS</span>
+          </button>
+          <button class="btn btn-secondary" id="btn-show-upgrades">
+            <span class="btn-text">SKILLS & MATRIX</span>
+          </button>
+          <button class="btn btn-secondary" id="btn-show-achievements">
+            <span class="btn-text">ARCHIVES & STATS</span>
+          </button>
+          <button class="btn btn-secondary" id="btn-show-settings">
+            <span class="btn-text">SYSTEM CONFIG</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="menu-footer">
+        <span>V2.6.0 // OFFLINE CORE DETECTED</span>
+      </div>
+    </section>
+
+    <!-- CUSTOMIZATION SCREEN -->
+    <section id="screen-customization" class="screen hidden">
+      <div class="screen-header">
+        <button class="btn-back" id="btn-back-customization">&larr; BACK</button>
+        <h2>CUSTOMIZATION DECK</h2>
+      </div>
+
+      <div class="tabs-container">
+        <button class="tab-btn active" data-tab="tab-skins">SNAKE SKINS</button>
+        <button class="tab-btn" data-tab="tab-trails">ENERGY TRAILS</button>
+      </div>
+
+      <div class="tab-content active" id="tab-skins">
+        <div class="customizer-layout">
+          <!-- Live Preview -->
+          <div class="preview-panel glass-panel">
+            <h3>SNAKE CORE PREVIEW</h3>
+            <div class="preview-viewport">
+              <canvas id="skin-preview-canvas"></canvas>
+            </div>
+            <div class="skin-attributes">
+              <div class="attr-row"><span>EMISSION FORCE:</span> <span class="cyan-text" id="preview-glow">STABLE</span></div>
+              <div class="attr-row"><span>PARTICLE BURST:</span> <span class="cyan-text" id="preview-particles">MEDIUM</span></div>
+            </div>
+          </div>
+          <!-- Skin Grid -->
+          <div class="selection-grid" id="skins-grid">
+            <!-- Dynamically populated skins -->
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content hidden" id="tab-trails">
+        <div class="selection-grid" id="trails-grid">
+          <!-- Dynamically populated trails -->
+        </div>
+      </div>
+    </section>
+
+    <!-- UPGRADES (SKILL TREE) SCREEN -->
+    <section id="screen-upgrades" class="screen hidden">
+      <div class="screen-header">
+        <button class="btn-back" id="btn-back-upgrades">&larr; BACK</button>
+        <h2>NEURAL MATRIX UPGRADES</h2>
+        <div class="skill-points-indicator glass-panel">
+          <span>MATRIX SPOTS AVAILABLE: </span>
+          <span class="points-valHighlight" id="skill-points-val">0</span>
+        </div>
+      </div>
+
+      <div class="skills-container">
+        <p class="description-text">Inject firmware upgrades to enhance core parameters. Earn Skill Points by leveling up.</p>
+        
+        <div class="skills-grid" id="skills-tree-grid">
+          <!-- Dynamically populated upgrades -->
+        </div>
+
+        <div class="skill-actions">
+          <button class="btn btn-secondary" id="btn-reset-skills">RESET CORE PARAMETERS</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARCHIVES & STATS (ACHIEVEMENTS) SCREEN -->
+    <section id="screen-achievements" class="screen hidden">
+      <div class="screen-header">
+        <button class="btn-back" id="btn-back-achievements">&larr; BACK</button>
+        <h2>ARCHIVES & STATISTICS</h2>
+      </div>
+
+      <div class="tabs-container">
+        <button class="tab-btn active" data-tab="tab-achievements">ACHIEVEMENTS</button>
+        <button class="tab-btn" data-tab="tab-stats">PLAYER DOSSIER</button>
+      </div>
+
+      <div class="tab-content active" id="tab-achievements">
+        <div class="achievements-scroll-container" id="achievements-list">
+          <!-- Dynamically populated achievements -->
+        </div>
+      </div>
+
+      <div class="tab-content hidden" id="tab-stats">
+        <div class="stats-grid glass-panel" id="stats-grid-container">
+          <!-- Dynamically populated stats -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SYSTEM CONFIG (SETTINGS) SCREEN -->
+    <section id="screen-settings" class="screen hidden">
+      <div class="screen-header">
+        <button class="btn-back" id="btn-back-settings">&larr; BACK</button>
+        <h2>SYSTEM CONFIGURATION</h2>
+      </div>
+
+      <div class="settings-form glass-panel">
+        <div class="setting-group">
+          <label for="settings-volume-sfx">SFX AUDIO LEVEL</label>
+          <div class="range-container">
+            <input type="range" id="settings-volume-sfx" min="0" max="100" value="70">
+            <span class="range-val" id="val-volume-sfx">70%</span>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label for="settings-volume-music">BGM MUSIC LEVEL</label>
+          <div class="range-container">
+            <input type="range" id="settings-volume-music" min="0" max="100" value="60">
+            <span class="range-val" id="val-volume-music">60%</span>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label for="settings-graphics">GRAPHICAL EMISSIVE DEPTH</label>
+          <select id="settings-graphics" class="cyber-select">
+            <option value="high">ULTRA NEON (HIGH PARTICLES)</option>
+            <option value="medium">STANDARD GLOW (MEDIUM)</option>
+            <option value="low">STABLE GRID (LOW)</option>
+          </select>
+        </div>
+
+        <div class="setting-group">
+          <label for="settings-controls">INPUT CONTROL DECK</label>
+          <select id="settings-controls" class="cyber-select">
+            <option value="keyboard">KEYBOARD (WASD / ARROWS)</option>
+            <option value="swipe">SWIPE CONTROLS</option>
+            <option value="joystick">ON-SCREEN VIRTUAL JOYSTICK</option>
+          </select>
+        </div>
+
+        <div class="setting-group checkbox-group">
+          <label for="settings-screen-shake">SCREEN SHAKE EFFECTS</label>
+          <input type="checkbox" id="settings-screen-shake" checked>
+        </div>
+
+        <div class="setting-group checkbox-group">
+          <label for="settings-grid-lines">GRID BOUNDARY VISIBILITY</label>
+          <input type="checkbox" id="settings-grid-lines" checked>
+        </div>
+
+        <div class="settings-actions">
+          <button class="btn btn-primary" id="btn-save-settings">APPLY CONFIGURATION</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAMEPLAY VIEWPORTS -->
+    <section id="screen-gameplay" class="screen hidden">
+      <!-- MODE SELECTION MENU overlay before game countdown -->
+      <div id="mode-selector-overlay" class="overlay-container">
+        <div class="mode-panel glass-panel">
+          <h2>SELECT OPERATION MODE</h2>
+          <div class="modes-grid" id="modes-selection-grid">
+            <!-- Dynamically populated game modes -->
+          </div>
+          <button class="btn btn-secondary" id="btn-cancel-game" style="margin-top: 20px;">ABORT MISSION</button>
+        </div>
+      </div>
+
+      <!-- GAME CUSTOM MODE CONFIGURATION PANEL -->
+      <div id="custom-mode-overlay" class="overlay-container hidden">
+        <div class="mode-panel glass-panel">
+          <h2>CUSTOM GRID PARAMETERS</h2>
+          <div class="settings-form" style="max-height: 400px; overflow-y: auto;">
+            <div class="setting-group">
+              <label for="custom-speed">INITIAL SPEED</label>
+              <input type="range" id="custom-speed" min="1" max="15" value="5">
+            </div>
+            <div class="setting-group">
+              <label for="custom-grid-size">GRID RESOLUTION</label>
+              <select id="custom-grid-size" class="cyber-select">
+                <option value="small">COMPACT (16x16)</option>
+                <option value="medium" selected>BALANCED (24x24)</option>
+                <option value="large">SPACIOUS (32x32)</option>
+              </select>
+            </div>
+            <div class="setting-group checkbox-group">
+              <label for="custom-walls-lethal">LETHAL BOUNDARIES</label>
+              <input type="checkbox" id="custom-walls-lethal" checked>
+            </div>
+            <div class="setting-group checkbox-group">
+              <label for="custom-obstacles">RANDOM OBSTACLES</label>
+              <input type="checkbox" id="custom-obstacles" checked>
+            </div>
+            <div class="setting-group checkbox-group">
+              <label for="custom-powerups">ENABLE POWER-UPS</label>
+              <input type="checkbox" id="custom-powerups" checked>
+            </div>
+          </div>
+          <div class="settings-actions" style="margin-top: 20px;">
+            <button class="btn btn-primary" id="btn-start-custom-game">LAUNCH MATRIX</button>
+            <button class="btn btn-secondary" id="btn-back-custom-game">CANCEL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- COUNTDOWN SCREEN -->
+      <div id="game-countdown-overlay" class="overlay-container hidden">
+        <div id="countdown-number">3</div>
+      </div>
+
+      <!-- MAIN GAME HUD & CANVAS CONTAINER -->
+      <div id="game-arena-wrapper">
+        <!-- Top HUD Panel -->
+        <div id="game-hud-top" class="hud-panel glass-panel">
+          <div class="hud-block">
+            <span class="hud-label">SCORE</span>
+            <span class="hud-val cyan-text" id="hud-score">000,000</span>
+          </div>
+          <div class="hud-block text-center">
+            <div class="combo-meter-container">
+              <span class="hud-label">COMBO</span>
+              <span class="hud-val magenta-text" id="hud-combo">x1</span>
+              <div class="combo-progress"><div id="hud-combo-bar" style="width: 100%;"></div></div>
+            </div>
+          </div>
+          <div class="hud-block text-right">
+            <span class="hud-label">MULTIPLIER</span>
+            <span class="hud-val yellow-text" id="hud-multiplier">1.0x</span>
+          </div>
+        </div>
+
+        <!-- The Canvas Frame -->
+        <div id="canvas-container">
+          <canvas id="game-canvas"></canvas>
+          <div id="screen-damage-flash"></div>
+          
+          <!-- Virtual Joystick Zone -->
+          <div id="joystick-zone" class="hidden">
+            <div id="joystick-base">
+              <div id="joystick-knob"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom HUD Panel -->
+        <div id="game-hud-bottom" class="hud-panel glass-panel">
+          <div class="hud-block align-left flex-row">
+            <div class="hud-sub-block">
+              <span class="hud-label">SHIELDS</span>
+              <div class="shield-slots" id="hud-shields">
+                <span class="shield-pip active"></span>
+              </div>
+            </div>
+            <div class="hud-sub-block" id="hud-survival-container" style="display: none; margin-left: 20px;">
+              <span class="hud-label">ENERGY</span>
+              <div class="survival-energy-bar"><div id="hud-survival-energy" style="width: 100%;"></div></div>
+            </div>
+            <div class="hud-sub-block" id="hud-time-container" style="display: none; margin-left: 20px;">
+              <span class="hud-label">TIME</span>
+              <span class="hud-val cyan-text" id="hud-time-val">00:00</span>
+            </div>
+          </div>
+
+          <div class="hud-block text-center">
+            <!-- Active powerups panel -->
+            <div id="hud-active-powers">
+              <!-- Active powerup icons dynamically created here -->
+            </div>
+          </div>
+
+          <div class="hud-block text-right flex-row-end">
+            <button class="btn-hud-control" id="btn-pause-game">PAUSE</button>
+          </div>
+        </div>
+
+        <!-- Touch Area for Mobile Swipe / Arrow zones -->
+        <div id="mobile-control-overlay" class="hidden">
+          <div class="control-zone" id="zone-top"></div>
+          <div class="control-zone" id="zone-left"></div>
+          <div class="control-zone" id="zone-right"></div>
+          <div class="control-zone" id="zone-bottom"></div>
+        </div>
+      </div>
+
+      <!-- PAUSE OVERLAY -->
+      <div id="pause-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+          <h2 class="cyan-text">SIMULATION SUSPENDED</h2>
+          <p class="subtitle-text">SYSTEM STANDBY</p>
+          <div class="modal-buttons">
+            <button class="btn btn-primary" id="btn-resume-game">RESUME LINK</button>
+            <button class="btn btn-secondary" id="btn-restart-game">RE-INITIALIZE</button>
+            <button class="btn btn-secondary" id="btn-quit-game">ABORT TO DECK</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAME OVER OVERLAY -->
+      <div id="game-over-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+          <h2 class="magenta-text" id="game-over-title">GRID CONNECTION LOST</h2>
+          <p class="subtitle-text" id="game-over-reason">SNAKE COLLISION IMMINENT</p>
+
+          <div class="summary-stats-box">
+            <div class="stat-box-row">
+              <span>FINAL SCORE:</span>
+              <span class="cyan-text" id="go-score">0</span>
+            </div>
+            <div class="stat-box-row">
+              <span>TIME SURVIVED:</span>
+              <span id="go-time">0s</span>
+            </div>
+            <div class="stat-box-row">
+              <span>XP HARVESTED:</span>
+              <span class="yellow-text" id="go-xp">+0 XP</span>
+            </div>
+          </div>
+
+          <div class="level-up-alert hidden" id="go-level-up-alert">
+            🚀 NEURAL LINK LEVEL UP! LEVEL <span id="go-new-level">2</span> REACHED!
+          </div>
+
+          <div class="modal-buttons">
+            <button class="btn btn-primary" id="btn-go-restart">RE-INITIALIZE</button>
+            <button class="btn btn-secondary" id="btn-go-menu">ABORT TO DECK</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Javascript Modules -->
+  <script src="sound.js"></script>
+  <script src="game/levels.js"></script>
+  <script src="game/particles.js"></script>
+  <script src="game/powerups.js"></script>
+  <script src="game/food.js"></script>
+  <script src="game/boss.js"></script>
+  <script src="game/snake.js"></script>
+  <script src="game/engine.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

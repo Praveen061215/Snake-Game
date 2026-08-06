@@ -1,0 +1,15 @@
+{
+  "name": "snake-game",
+  "version": "1.0.0",
+  "description": "A snake game built with JavaScript",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8080",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
